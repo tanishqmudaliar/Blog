@@ -5,12 +5,14 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import Login from './Components/Login';
+import Home from './Components/Home';
 import ErrorPage from './Components/ErrorPage';
 import { UserAuthContextProvider } from "./Context/UserAuthContext";
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import { SpeedDial, Tooltip } from '@mui/material';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -20,17 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/home',
-    element: <Login />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/blog',
-    element: <Login />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/portfolio',
-    element: <Login />,
+    element: <ProtectedRoute Component={Home}/>,
     errorElement: <ErrorPage />,
   },
 ]);
@@ -72,7 +64,7 @@ function App() {
 }
 
 export default function AppWithDarkMode() {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState('dark');
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {

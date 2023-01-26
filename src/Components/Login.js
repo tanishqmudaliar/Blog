@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     TextField,
     InputAdornment,
     IconButton,
-    Button
+    Button,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import Visibility from '@mui/icons-material/Visibility';
@@ -15,7 +17,9 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { logIn } = useUserAuth("");
+    const [status, setStatus] = useState();
+    const [open, setOpen] = useState(false);
+    const { logIn, user } = useUserAuth();
     const [values, setValues] = useState({
       showPassword: false,
     });
@@ -32,18 +36,37 @@ function Login() {
     const handleMouseDownPassword = (event) => {
       event.preventDefault();
     };
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      setError("");
       try {
         await logIn(email, password);
+        setStatus(true);
+        setOpen(true);
+        await delay(1000);
         navigate("/home");
       } catch (err) {
+        setStatus(false);
         setError(err.message);
+        setOpen(true);
       }
     };  
 
+    const handleClose = (reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setOpen(false);
+        };
+    
+    useEffect(() => {
+        if (user) {
+            navigate("/home");
+        }
+    })
+    
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -58,6 +81,11 @@ function Login() {
                     backgroundColor: 'background.default',
                 }}
             >
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={status === false ? "error" : "success"} sx={{ width: '100%' }}>
+                        {status === true ? "Successfully logged in!" : error}
+                    </Alert>
+                </Snackbar>
                 <Box
                     sx={{
                         backgroundColor: 'background.footer',
@@ -74,6 +102,7 @@ function Login() {
                 >
                     Welcome
                     <TextField
+                        required
                         type='email'
                         color='warning'
                         label='Email'
