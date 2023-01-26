@@ -9,10 +9,12 @@ import Home from './Components/Home';
 import ErrorPage from './Components/ErrorPage';
 import { UserAuthContextProvider } from "./Context/UserAuthContext";
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import { SpeedDial, Tooltip } from '@mui/material';
+import { AppBar, Breadcrumbs, Link, SpeedDial, Tooltip } from '@mui/material';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import ProtectedRoute from './Components/ProtectedRoute';
+import Portfolio from './Components/Portfolio';
+import Blog from './Components/Blog';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,16 @@ const router = createBrowserRouter([
   {
     path: '/home',
     element: <ProtectedRoute Component={Home}/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/portfolio',
+    element: <ProtectedRoute Component={Portfolio}/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/blog',
+    element: <ProtectedRoute Component={Blog}/>,
     errorElement: <ErrorPage />,
   },
 ]);
@@ -56,9 +68,45 @@ function App() {
         >
         </SpeedDial>
       </Tooltip>
-      <RouterProvider router={router}>
-        <Login />
-      </RouterProvider>
+      <AppBar
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          height: '5vh',
+        }}
+      >
+        <Breadcrumbs>
+          <Link
+            underline='none'
+            href='/blog'
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
+            Blog
+          </Link>
+          <Link
+            underline='none'
+            href='/portfolio'
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
+            Portfolio
+          </Link>
+          <Link
+            underline='none'
+            href='/home'
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
+            Home
+          </Link>
+        </Breadcrumbs>
+      </AppBar>
+      <RouterProvider router={router} />
     </div>
   );
 }
